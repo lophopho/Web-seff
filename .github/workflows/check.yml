@@ -1,0 +1,20 @@
+name: Check Web Surf
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Offline contract and error tests
+        run: node --test tests/web-surf.test.cjs
+      - name: Check public web services (best effort)
+        continue-on-error: true
+        run: node tests/live-smoke.cjs
